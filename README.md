@@ -2,9 +2,9 @@
 
 The aim of this challenge is to add features to an existing simplified meal ordering platform, which, in the current state, looks like shown in screenshots below.
 
-![image](https://github.com/kevin-kessler/origin-full-stack-restaurant-challenge/assets/13378028/5b86457f-75fe-40f6-baf0-96c079511dbe)
+![image](https://github.com/kevin-kessler/origin-full-stack-restaurant-challenge/assets/13378028/40bf6fd0-9a43-4ea8-842e-9b5007834c86)
 
-![image](https://github.com/kevin-kessler/origin-full-stack-restaurant-challenge/assets/13378028/43dc6b40-5063-4fb5-a55b-a76852bc6e66)
+![image](https://github.com/kevin-kessler/origin-full-stack-restaurant-challenge/assets/13378028/abd6ecc6-ab03-4845-86e0-9b4aa0722b33)
 
 Please use the code provided in this repository as the base for your solution and extend it by the requested features mentioned below.
 
