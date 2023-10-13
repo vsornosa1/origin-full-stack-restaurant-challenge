@@ -83,4 +83,8 @@ Please let us know if you encounter any issue while trying to launch the current
 ### Rules
 - Please implement your solution with the Vue.js (v3) and FastAPI frameworks.
 - Please only use packages that are being shipped with this challenge. This concerns both, front-end and back-end. For example, the front-end includes the packages `primeflex`, `primeicons` and `primevue` which should be sufficient for completing this challenge.
-- Please make sure to submit your solution before the deadline. The deadline as well as the location for the submission are mentioned in the eMail which invited you to this challenge.
+
+### Submission
+- Please submit your solution as a zip file. It should contain the entire repository, including your .git folder.
+- Please name your zip file by the following format: firstname_lastname.zip, where firstname is your first name and lastname is your last name.
+- Please make sure to submit your solution before the deadline. The deadline as well as the location for the submission are mentioned in the e-Mail which invited you to this challenge.
