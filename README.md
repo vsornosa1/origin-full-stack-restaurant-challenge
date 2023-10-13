@@ -3,6 +3,8 @@
 The aim of this challenge is to add features to an existing simplified meal ordering platform.
 Please use the code provided in this repository as the base for your solution and extend it by the requested features mentioned below.
 
+![image](https://github.com/kevin-kessler/origin-full-stack-restaurant-challenge/assets/13378028/5b86457f-75fe-40f6-baf0-96c079511dbe)
+
 Your implementation should have a clean code structure, follow best practices, and optionally include some test coverage.
 
 The challenge comprises the following tasks:
