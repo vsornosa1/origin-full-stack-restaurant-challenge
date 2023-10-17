@@ -1,7 +1,5 @@
 from functools import wraps
-
 from starlette.responses import Response
-
 from .database import SessionLocal
 
 def get_db():

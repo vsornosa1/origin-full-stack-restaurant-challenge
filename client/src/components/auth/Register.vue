@@ -44,9 +44,29 @@ export default {
     closeModal() {
       this.$emit('update:display', false);
     },
-    handleRegister() {
+    async handleRegister() {
       console.log('Registering with', this.register.username);
-      this.closeModal();
+
+      try {
+        const response = await fetch("https://localhost:8443/api/users", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(this.register)
+        });
+
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.detail);
+        }
+
+        this.$router.push("/");
+      } catch (err) {
+        console.error("An error occurred:", err.message);
+      }
+
+      //this.closeModal();
     }
   },
 	computed: {

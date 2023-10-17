@@ -5,6 +5,7 @@ from pydantic.utils import GetterDict
 from pydantic import BaseModel
 
 
+# PLATES ========================
 class PlateBase(BaseModel):
     plate_name: str
     price: float
@@ -45,6 +46,7 @@ class PlateOrder(PlateOrderBase):
         getter_dict = PlateOrderGetter
 
 
+# ORDERS ========================
 class OrderBase(BaseModel):
     plates: List[PlateOrderBase]
     
@@ -53,6 +55,19 @@ class Order(OrderBase):
     order_id: int
     order_time: datetime
     plates: List[PlateOrder]
+
+    class Config:
+        orm_mode = True
+
+# USERS ========================
+class UserBase(BaseModel):
+    username: str
+
+class UserCreate(UserBase):
+    password: str
+
+class User(UserBase):
+    id: int
 
     class Config:
         orm_mode = True

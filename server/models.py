@@ -7,6 +7,7 @@ from sqlalchemy import (
     Text,
     ForeignKey,
     Float,
+    String
 )
 from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import relationship
@@ -52,3 +53,10 @@ class Order(Base):
 
     plates = relationship("PlateOrder", back_populates="order")
 
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    hashed_password = Column(String)
