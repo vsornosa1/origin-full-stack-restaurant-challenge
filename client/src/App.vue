@@ -3,7 +3,7 @@ import TabMenu from 'primevue/tabmenu';
 import { ref } from 'vue';
 
 const items = ref([
-  {label: 'Menu', to: '/'},
+  {label: 'Menu', to: '/menu'},
   {label: 'Orders', to: '/orders'},
 ]);
 
