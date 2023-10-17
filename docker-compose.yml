@@ -55,6 +55,7 @@ services:
       - app
     expose:
       - "3000"
+    command: ["npm", "run", "dev"]
     labels:
       - "traefik.enable=true"
       # HTTP
@@ -65,15 +66,15 @@ services:
       - "traefik.http.routers.client-secure.entrypoints=web-secure"
       - "traefik.http.routers.client-secure.tls=true"
     volumes:
-      - ./client/dist/assets:/opt/app/assets:ro
+      - ./client/dist/assets:/opt/app/assets
       # Add a bind mount with the source code.
-      - ./client/src:/opt/app/src:ro
+      - ./client/src:/opt/app/src
       # Add a bind mount with the public directory.
-      - ./client/public:/opt/app/public:ro
+      - ./client/public:/opt/app/public
       # Add a bind mount with index.html.
-      - ./client/index.html:/opt/app/index.html:ro
+      - ./client/index.html:/opt/app/index.html
       # Add a bind mount with the vite config.
-      - ./client/vite.config.js:/opt/app/vite.config.js:ro
+      - ./client/vite.config.js:/opt/app/vite.config.js
 
   reverse-proxy:
     container_name: reverse-proxy
