@@ -15,7 +15,7 @@
 		</div>
 
 		<div class="flex flex-row-reverse">
-    	<Button :disabled="isButtonDisabled" class="block mt-2" label="Login" @click="handleLogin" />
+      <Button :disabled="isButtonDisabled" class="block mt-2" label="Login" @click="handleLogin" />
 		</div>
     <p> Don't have an account? <router-link to="/register" class="cursor-pointer"> Register </router-link></p>
   </Dialog>
@@ -47,15 +47,45 @@ export default {
     closeModal() {
       this.$emit('update:display', false);
     },
-    handleLogin() {
+    async handleLogin() {
       console.log('Logging in with', this.login.username);
-      this.closeModal();
+      const response = await fetch('https://localhost:8443/token', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(this.login)
+      });
+
+      if (response.ok) {
+        console.log('Hit');
+        const data = await response.json();
+        const token = data.access_token;
+        localStorage.setItem('token', token);
+      } else {
+        console.error("Error logging in:", await response.text());
+      }
+    },
+    async makeApiCallWithToken(url, options = {}) {
+      options.headers = options.headers || {};
+      options.headers['Authorization'] = 'Bearer ' + localStorage.getItem('token');
+      const response = await fetch(url, options);
+      return response.json();
+    },
+    checkAuth() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        this.$store.commit('setAuthenticated', true);
+      }
     }
   },
-	computed: {
+  mounted() {
+    this.checkAuth();
+  },
+  computed: {
     isButtonDisabled() {
       return !this.login.username.trim() || !this.login.password.trim();
     }
-},
+  },
 }
 </script>
