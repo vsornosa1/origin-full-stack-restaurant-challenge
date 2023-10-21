@@ -3,8 +3,7 @@
     :modal="true" 
     :closable="true" 
 		:visible="true"
-    header="🍕 CERN's Restaurant" 
-    @hide="closeModal"
+    header="🍕 CERN's Restaurant"
 		class="w-24rem">
 
     <h3> Official registering form </h3>
@@ -46,10 +45,6 @@ export default {
       !register.value.username.trim() || !register.value.password.trim()
     );
 
-    function closeModal() {
-      emit('update:display', false);
-    }
-
     async function handleRegister() {
       console.log('Registering with', register.value.username);
 
@@ -71,14 +66,11 @@ export default {
       } catch (err) {
         console.error("An error occurred:", err.message);
       }
-
-      closeModal();
     }
 
     return {
       register,
       isButtonDisabled,
-      closeModal,
       handleRegister
     };
   }

@@ -3,8 +3,7 @@
     :modal="true" 
     :closable="true" 
     :visible="true" 
-    header="🍕 CERN's Restaurant" 
-    @hide="closeModal" 
+    header="🍕 CERN's Restaurant"
 		class="w-24rem">
 
     <h3> Welcome back colleague! </h3>
@@ -51,7 +50,7 @@ export default {
 
     async function handleLogin() {
       console.log('Logging in with: ', login.value.username);
-      const response = await fetch('https://localhost:8443/token', {
+      const response = await fetch('https://localhost:8443/api/token', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
