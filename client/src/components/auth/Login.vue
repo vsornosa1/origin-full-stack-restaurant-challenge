@@ -15,7 +15,7 @@
 		</div>
 
 		<div class="flex flex-row-reverse">
-      <Button :disabled="isButtonDisabled" class="block mt-2 custom-btn" label="Login" @click="handleLogin" />
+      <Button :disabled="isButtonDisabled" class="block mt-2" label="Login" @click="handleLogin" />
 		</div>
     <p> Don't have an account? <router-link to="/register" class="cursor-pointer"> Register </router-link></p>
   </Dialog>
@@ -27,6 +27,7 @@ import { useAuthStore } from '@/stores/authStore';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
+import { useRouter } from 'vue-router';
 
 export default {
   components: {
@@ -37,8 +38,21 @@ export default {
   props: {
     display: Boolean
   },
-  setup(props) {
+  setup(props, context) {
+    const router = useRouter();
     const authStore = useAuthStore();
+
+    function closeModal() {
+      context.emit('update:display', false);
+    }
+
+    function checkAuth() {
+      const token = localStorage.getItem("token");
+      if (token) {
+        authStore.setAuthenticated(true);
+        router.push('/dashboard');
+      }
+    }
 
     const login = ref({
       username: '',
@@ -48,10 +62,6 @@ export default {
     const isButtonDisabled = computed(() =>
       !login.value.username.trim() || !login.value.password.trim()
     );
-
-    function closeModal() {
-      emit('update:display', false);
-    }
 
     async function handleLogin() {
       console.log('Logging in with: ', login.value.username);
@@ -79,13 +89,6 @@ export default {
       options.headers['Authorization'] = 'Bearer ' + localStorage.getItem('token');
       const response = await fetch(url, options);
       return response.json();
-    }
-
-    function checkAuth() {
-      const token = localStorage.getItem("token");
-      if (token) {
-        authStore.setAuthenticated(true);
-      }
     }
 
     onMounted(checkAuth);

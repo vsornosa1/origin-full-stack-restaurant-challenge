@@ -15,7 +15,7 @@
 		</div>
 
 		<div class="flex flex-row-reverse">
-			<Button :disabled="isButtonDisabled" class="block mt-2 custom-btn" label="Register" @click="handleRegister" />
+			<Button :disabled="isButtonDisabled" class="block mt-2" label="Register" @click="handleRegister" />
 		</div>
     <p> Already have an account? <router-link to="/" class="cursor-pointer"> Login </router-link></p>
   </Dialog>

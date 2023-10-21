@@ -16,6 +16,3 @@ const items = ref([
   </div>
 </template>
 
-<style scoped>
-
-</style>
