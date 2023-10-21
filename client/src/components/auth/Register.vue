@@ -1,9 +1,10 @@
 <template>
   <Dialog
     :modal="true" 
-    :closable="true" 
+    :closable="false" 
 		:visible="true"
     header="🍕 CERN's Restaurant"
+    @hide="closeModal"
 		class="w-24rem">
 
     <h3> Official registering form </h3>
@@ -14,7 +15,7 @@
 		</div>
 
 		<div class="flex flex-row-reverse">
-			<Button :disabled="isButtonDisabled" class="block mt-2" label="Register" @click="handleRegister" />
+			<Button :disabled="isButtonDisabled" class="block mt-2 custom-btn" label="Register" @click="handleRegister" />
 		</div>
     <p> Already have an account? <router-link to="/" class="cursor-pointer"> Login </router-link></p>
   </Dialog>
@@ -45,6 +46,10 @@ export default {
       !register.value.username.trim() || !register.value.password.trim()
     );
 
+    function closeModal() {
+      emit('update:display', false);
+    }
+
     async function handleRegister() {
       console.log('Registering with', register.value.username);
 
@@ -66,11 +71,13 @@ export default {
       } catch (err) {
         console.error("An error occurred:", err.message);
       }
+      closeModal();
     }
 
     return {
       register,
       isButtonDisabled,
+      closeModal,
       handleRegister
     };
   }

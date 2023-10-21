@@ -1,9 +1,10 @@
 <template>
   <Dialog
     :modal="true" 
-    :closable="true" 
+    :closable="false" 
     :visible="true" 
     header="🍕 CERN's Restaurant"
+    @hide="closeModal" 
 		class="w-24rem">
 
     <h3> Welcome back colleague! </h3>
@@ -14,7 +15,7 @@
 		</div>
 
 		<div class="flex flex-row-reverse">
-      <Button :disabled="isButtonDisabled" class="block mt-2" label="Login" @click="handleLogin" />
+      <Button :disabled="isButtonDisabled" class="block mt-2 custom-btn" label="Login" @click="handleLogin" />
 		</div>
     <p> Don't have an account? <router-link to="/register" class="cursor-pointer"> Register </router-link></p>
   </Dialog>
@@ -48,6 +49,10 @@ export default {
       !login.value.username.trim() || !login.value.password.trim()
     );
 
+    function closeModal() {
+      emit('update:display', false);
+    }
+
     async function handleLogin() {
       console.log('Logging in with: ', login.value.username);
       const response = await fetch('https://localhost:8443/api/token', {
@@ -66,6 +71,7 @@ export default {
       } else {
         console.error("Error logging in:", await response.text());
       }
+      closeModal();
     }
 
     async function makeApiCallWithToken(url, options = {}) {
