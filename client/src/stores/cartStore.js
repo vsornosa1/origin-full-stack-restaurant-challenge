@@ -11,6 +11,12 @@ export const useCartStore = defineStore("cart", {
               0
             );
         },
+        cartQuantity() {
+            return this.cart.reduce(
+              (quantity, item) => quantity + item.quantity,
+              0
+            );
+        }
     },
     actions: {
         addToCart(meal) {

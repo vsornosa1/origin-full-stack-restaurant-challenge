@@ -1,6 +1,6 @@
 <template>
     <div v-if="cart.length" class="cart-dropdown" v-on:click="isOpen = !isOpen">
-        <span>Cart has ({{ cart.length }} items)</span>
+        <span> Cart has ({{ quantity }} items) </span>
         <div v-if="isOpen" class="cart-content">
             <ul>
                 <li v-for="item in cart" :key="item.id">
@@ -8,7 +8,7 @@
                 </li>
             </ul>
             <hr>
-            <div>Total: {{ total }} CHF</div>
+            <div> Total: {{ total }} CHF </div>
         </div>
     </div>
 </template>
@@ -20,6 +20,7 @@ import { useCartStore } from '@/stores/cartStore';
 const cartStore = useCartStore();
 const cart = ref(cartStore.cart);
 const total = computed(() => cartStore.cartTotal);
+const quantity = computed(() => cartStore.cartQuantity);
 
 let isOpen = ref(false);
 </script>
