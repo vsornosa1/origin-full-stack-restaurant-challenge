@@ -72,10 +72,11 @@ class User(UserBase):
     class Config:
         orm_mode = True
 
-
+# Sent back after 200 auth
 class Token(BaseModel):
-    access_token: str
-    token_type: str
+    access_token: str     # JWT string
+    token_type: str       # 'bearer' type of token
 
 class TokenData(BaseModel):
-    username: str = None
+    username: str
+    password: str

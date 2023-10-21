@@ -22,9 +22,11 @@
 </template>
 
 <script>
+import { ref, computed } from 'vue';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
+import { useRouter } from 'vue-router';
 
 export default {
   components: {
@@ -32,20 +34,24 @@ export default {
     Button,
     InputText
   },
-  data() {
-    return {
-      register: {
-        username: '',
-        password: ''
-      }
+  setup(_, { emit }) {
+    const router = useRouter();
+
+    const register = ref({
+      username: '',
+      password: ''
+    });
+
+    const isButtonDisabled = computed(() =>
+      !register.value.username.trim() || !register.value.password.trim()
+    );
+
+    function closeModal() {
+      emit('update:display', false);
     }
-  },
-  methods: {
-    closeModal() {
-      this.$emit('update:display', false);
-    },
-    async handleRegister() {
-      console.log('Registering with', this.register.username);
+
+    async function handleRegister() {
+      console.log('Registering with', register.value.username);
 
       try {
         const response = await fetch("https://localhost:8443/api/users", {
@@ -53,7 +59,7 @@ export default {
           headers: {
             "Content-Type": "application/json"
           },
-          body: JSON.stringify(this.register)
+          body: JSON.stringify(register.value)
         });
 
         if (!response.ok) {
@@ -61,18 +67,20 @@ export default {
           throw new Error(data.detail);
         }
 
-        this.$router.push("/");
+        router.push("/");
       } catch (err) {
         console.error("An error occurred:", err.message);
       }
 
-      //this.closeModal();
+      closeModal();
     }
-  },
-	computed: {
-    isButtonDisabled() {
-      return !this.register.username.trim() || !this.register.password.trim();
-    }
-},
+
+    return {
+      register,
+      isButtonDisabled,
+      closeModal,
+      handleRegister
+    };
+  }
 }
 </script>

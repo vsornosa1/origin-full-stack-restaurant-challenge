@@ -22,6 +22,8 @@
 </template>
 
 <script>
+import { ref, computed, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/authStore';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
@@ -35,26 +37,26 @@ export default {
   props: {
     display: Boolean
   },
-  data() {
-    return {
-      login: {
-        username: '',
-        password: ''
-      }
-    }
-  },
-  methods: {
-    closeModal() {
-      this.$emit('update:display', false);
-    },
-    async handleLogin() {
-      console.log('Logging in with', this.login.username);
+  setup(props) {
+    const authStore = useAuthStore();
+
+    const login = ref({
+      username: '',
+      password: ''
+    });
+
+    const isButtonDisabled = computed(() =>
+      !login.value.username.trim() || !login.value.password.trim()
+    );
+
+    async function handleLogin() {
+      console.log('Logging in with: ', login.value.username);
       const response = await fetch('https://localhost:8443/token', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify(this.login)
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(login.value)
       });
 
       if (response.ok) {
@@ -65,27 +67,29 @@ export default {
       } else {
         console.error("Error logging in:", await response.text());
       }
-    },
-    async makeApiCallWithToken(url, options = {}) {
+    }
+
+    async function makeApiCallWithToken(url, options = {}) {
       options.headers = options.headers || {};
       options.headers['Authorization'] = 'Bearer ' + localStorage.getItem('token');
       const response = await fetch(url, options);
       return response.json();
-    },
-    checkAuth() {
+    }
+
+    function checkAuth() {
       const token = localStorage.getItem("token");
       if (token) {
-        this.$store.commit('setAuthenticated', true);
+        authStore.setAuthenticated(true);
       }
     }
-  },
-  mounted() {
-    this.checkAuth();
-  },
-  computed: {
-    isButtonDisabled() {
-      return !this.login.username.trim() || !this.login.password.trim();
-    }
-  },
+
+    onMounted(checkAuth);
+
+    return {
+      login,
+      isButtonDisabled,
+      handleLogin
+    };
+  }
 }
 </script>
