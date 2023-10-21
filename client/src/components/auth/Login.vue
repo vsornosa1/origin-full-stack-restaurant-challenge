@@ -22,12 +22,13 @@
 </template>
 
 <script>
-import { ref, computed, onMounted } from 'vue';
+import { reactive, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/authStore';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import { useRouter } from 'vue-router';
+import { getToken } from '@/services/apiService';
 
 export default {
   components: {
@@ -38,65 +39,49 @@ export default {
   props: {
     display: Boolean
   },
-  setup(props, context) {
+  setup(_, context) {
     const router = useRouter();
     const authStore = useAuthStore();
+
+    const state = reactive({
+      login: {
+        username: '',
+        password: ''
+      },
+    });
+
+    const isButtonDisabled = computed(() =>
+      !state.login.username.trim() || !state.login.password.trim()
+    );
 
     function closeModal() {
       context.emit('update:display', false);
     }
 
-    function checkAuth() {
-      const token = localStorage.getItem("token");
-      if (token) {
-        authStore.setAuthenticated(true);
-        router.push('/dashboard');
+    function navigateToMenuIfAuthenticated() {
+      if (authStore.isAuthenticated) {
+        router.push('/menu');
       }
     }
 
-    const login = ref({
-      username: '',
-      password: ''
-    });
-
-    const isButtonDisabled = computed(() =>
-      !login.value.username.trim() || !login.value.password.trim()
-    );
-
-    async function handleLogin() {
-      console.log('Logging in with: ', login.value.username);
-      const response = await fetch('https://localhost:8443/api/token', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(login.value)
-      });
-
-      if (response.ok) {
-        console.log('Hit');
-        const data = await response.json();
-        const token = data.access_token;
-        localStorage.setItem('token', token);
-      } else {
-        console.error("Error logging in:", await response.text());
+    async function attemptLogin() {
+      try {
+        const data = await getToken(state.login);
+        localStorage.setItem('token', data.access_token);
+        authStore.setAuthenticated(true);
+        navigateToMenuIfAuthenticated();
+      } catch (error) {
+        console.error("Error logging in:", error.message);
       }
       closeModal();
     }
 
-    async function makeApiCallWithToken(url, options = {}) {
-      options.headers = options.headers || {};
-      options.headers['Authorization'] = 'Bearer ' + localStorage.getItem('token');
-      const response = await fetch(url, options);
-      return response.json();
-    }
-
-    onMounted(checkAuth);
+    onMounted(navigateToMenuIfAuthenticated);
 
     return {
-      login,
+      ...state,
       isButtonDisabled,
-      handleLogin
+      handleLogin: attemptLogin,
     };
   }
 }

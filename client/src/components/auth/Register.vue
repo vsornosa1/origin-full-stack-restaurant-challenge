@@ -22,11 +22,13 @@
 </template>
 
 <script>
-import { ref, computed } from 'vue';
+import { reactive, computed, onMounted } from 'vue';
+import { useAuthStore } from '@/stores/authStore';
 import Dialog from 'primevue/dialog';
 import Button from 'primevue/button';
 import InputText from 'primevue/inputtext';
 import { useRouter } from 'vue-router';
+import { registerUser } from '@/services/apiService'; 
 
 export default {
   components: {
@@ -34,51 +36,44 @@ export default {
     Button,
     InputText
   },
-  setup(_, { emit }) {
+  setup(_, context) {
     const router = useRouter();
+    const authStore = useAuthStore();
 
-    const register = ref({
-      username: '',
-      password: ''
+    const state = reactive({
+      register: {
+        username: '',
+        password: ''
+      },
+      isButtonDisabled: computed(() => !state.register.username.trim() || !state.register.password.trim())
     });
 
-    const isButtonDisabled = computed(() =>
-      !register.value.username.trim() || !register.value.password.trim()
-    );
-
     function closeModal() {
-      emit('update:display', false);
+      context.emit('update:display', false);
     }
 
-    async function handleRegister() {
-      console.log('Registering with', register.value.username);
+    function navigateToMenuIfAuthenticated() {
+      if (authStore.isAuthenticated) {
+        router.push('/menu');
+      }
+    }
 
+    async function attemptRegister() {
       try {
-        const response = await fetch("https://localhost:8443/api/users", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(register.value)
-        });
-
-        if (!response.ok) {
-          const data = await response.json();
-          throw new Error(data.detail);
-        }
-
-        router.push("/");
-      } catch (err) {
-        console.error("An error occurred:", err.message);
+        await registerUser(state.register);
+        authStore.setAuthenticated(true);
+        navigateToMenuIfAuthenticated();
+      } catch (error) {
+        console.error("Error registering:", error.message);
       }
       closeModal();
     }
 
+    onMounted(navigateToMenuIfAuthenticated);
+
     return {
-      register,
-      isButtonDisabled,
-      closeModal,
-      handleRegister
+      ...state,
+      handleRegister: attemptRegister
     };
   }
 }
