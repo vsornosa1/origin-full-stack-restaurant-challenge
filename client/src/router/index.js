@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 
-const Menu   = () => import('@/components/Menu.vue')
-const Orders = () => import('@/components/Orders.vue')
+const Menu   = () => import('@/views/Menu.vue')
+const Orders = () => import('@/views/Orders.vue')
 const Login  = () => import('@/components/auth/Login.vue') 
 const Register  = () => import('@/components/auth/Register.vue') 
 
