@@ -55,6 +55,22 @@ ALTER TABLE public.order_order_id_seq OWNER TO tech_user;
 ALTER SEQUENCE public.order_order_id_seq OWNED BY public."order".order_id;
 
 
+
+--
+-- Name: users; Type: TABLE; Schema: public; Owner: tech_user
+--
+
+CREATE TABLE public."users" (
+    user_id serial PRIMARY KEY,
+    username text NOT NULL UNIQUE,
+    password text NOT NULL,
+    -- other user related columns (e.g., email, date_created, etc.)
+);
+
+ALTER TABLE public."order" 
+ADD COLUMN user_id integer REFERENCES public."users"(user_id);
+
+
 --
 -- Name: plate; Type: TABLE; Schema: public; Owner: tech_user
 --

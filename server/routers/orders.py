@@ -20,9 +20,10 @@ async def search_orders(db_session: Session = Depends(get_db)):
 @router.post("", response_model=Order)
 async def add_new_order(
     item: OrderBase,
+    user_id: int,
     db_session: Session = Depends(get_db)
 ):
     """Find order by ID.
 
     """
-    return add_order(db_session, item)
+    return add_order(db_session, item, user_id)

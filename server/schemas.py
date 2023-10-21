@@ -48,6 +48,7 @@ class PlateOrder(PlateOrderBase):
 
 # ORDERS ========================
 class OrderBase(BaseModel):
+    user_id: int
     plates: List[PlateOrderBase]
     
 

@@ -3,13 +3,19 @@ from fastapi import HTTPException
 from server.schemas import OrderBase
 
 import server.models as md
-
+import logging
+logging.basicConfig(level=logging.INFO)
 
 def get_orders(db_session: Session):
-    return db_session.query(md.Order).all()
+    try:
+        return db_session.query(md.Order).all()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
-def add_order(db_session: Session, item: OrderBase):
+def add_order(db_session: Session, item: OrderBase, user_id: int):
+    logging.info("Adding a new order for user: %s", user_id)
+    
     # Check if all plates exist.
     plate_ids = [plate.plate_id for plate in item.plates]
     plate_ids_result = db_session.query(md.Plate.plate_id).filter(
@@ -29,6 +35,7 @@ def add_order(db_session: Session, item: OrderBase):
                 detail="Non-positive plate quantity."
             )
 
+    order.user_id = user_id
     order = md.Order()
     # Add PlateOrder objects.
     for plate in item.plates:

@@ -29,7 +29,7 @@
 import OrderList from 'primevue/orderlist';
 import { ref, onMounted, computed } from 'vue';
 
-const orders = ref(null);
+const orders = ref();
 const plates = ref();
 
 onMounted(async () => {
@@ -56,6 +56,8 @@ function plateImage(itemId) {
 }
 
 function parseTimeToString(timestamp) {
+    if(!timestamp) return '';
+
     const regex = /(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/;
     let matches = timestamp.match(regex);
     if (matches) {
