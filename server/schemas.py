@@ -5,6 +5,7 @@ from pydantic.utils import GetterDict
 from pydantic import BaseModel
 
 
+
 # PLATES ========================
 class PlateBase(BaseModel):
     plate_name: str
@@ -61,6 +62,8 @@ class Order(OrderBase):
     class Config:
         orm_mode = True
 
+
+
 # USERS ========================
 class UserBase(BaseModel):
     username: str
@@ -82,3 +85,25 @@ class Token(BaseModel):
 class TokenData(BaseModel):
     username: str
     password: str
+
+
+
+# REVIEWS ========================
+class ReviewBase(BaseModel):
+    rating: int
+    comment: str
+
+class ReviewCreate(ReviewBase):
+    plate_id: int
+
+class Review(ReviewBase):
+    id: int
+    user_id: int
+
+    class Config:
+        orm_mode = True
+
+class PlateWithReviews(Plate):
+    reviews: List[Review] = []
+class UserWithReviews(User):
+    reviews: List[Review] = []

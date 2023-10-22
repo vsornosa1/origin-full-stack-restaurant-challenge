@@ -216,6 +216,18 @@ button:active {
   background-color: var(--indigo-700);
 }
 
+.negative-state {
+  background-color: var(--red-400);
+  border: none;
+}
+.negative-state:hover {
+  border-color: var(--red-300);
+}
+
+.negative-state:active {
+  background-color: var(--red-600);
+}
+
 .card {
   padding: 2em;
 }

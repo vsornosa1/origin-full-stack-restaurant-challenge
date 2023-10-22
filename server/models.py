@@ -41,6 +41,7 @@ class Plate(Base):
     picture = Column(Text)
 
     orders = relationship("PlateOrder", back_populates="plate")
+    reviews = relationship("Review", back_populates="plate")
 
 
 class Order(Base):
@@ -63,3 +64,17 @@ class User(Base):
     hashed_password = Column(String)
 
     orders = relationship("Order", back_populates="owner")
+    reviews = relationship("Review", back_populates="user")
+
+
+class Review(Base):
+    __tablename__ = "reviews"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    plate_id = Column(Integer, ForeignKey("plate.plate_id"))
+    rating = Column(Integer, nullable=False)
+    comment = Column(String, nullable=True)
+
+    user = relationship("User", back_populates="reviews")
+    plate = relationship("Plate", back_populates="reviews")

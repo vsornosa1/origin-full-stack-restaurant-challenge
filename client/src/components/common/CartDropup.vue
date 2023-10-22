@@ -4,7 +4,7 @@
         <div v-if="isOpen" class="cart-content">
             <ul>
                 <li v-for="item in cart" :key="item.id" class="flex justify-content-between flex-wrap">
-                    <span> {{ truncateMealName(item.plate_name) }} </span>
+                    <span> {{ truncateMealName(item.plate_name, 3) }} </span>
                     <span> {{ item.price }} CHF x{{ item.quantity }} </span>
                 </li>
             </ul>
@@ -32,6 +32,7 @@ import { useCartStore } from '@/stores/cartStore';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import { makeApiCallWithToken } from '@/services/apiService';
+import { truncateMealName } from '@/services/truncate';
 
 
 let isOpen = ref(false);
@@ -43,9 +44,7 @@ const total = computed(() => cartStore.cartTotal);
 const quantity = computed(() => cartStore.cartQuantity);
 
 
-const truncateMealName = (name) => {
-    return name.split(' ').slice(0, 3).join(' ');
-}
+
 const showConfirm = () => {
     displayConfirm.value = true;
 };

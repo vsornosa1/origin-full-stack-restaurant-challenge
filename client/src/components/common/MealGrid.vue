@@ -6,7 +6,10 @@
             <div class="text-2xl font-bold"> {{ meal.plate_name }} </div>
         </div>
         <div class="flex align-items-center justify-content-between">
-            <span class="text-2xl font-semibold"> {{ meal.price }} CHF </span>
+            <div class="block">
+                <span class="text-2xl font-semibold"> {{ meal.price }} CHF </span>
+                <Rating v-model="value" :cancel="false" />
+            </div>
             <Button icon="pi pi-shopping-cart" @click="addToCart(meal)" rounded></Button>
         </div>
     </div>
@@ -15,10 +18,12 @@
 <script>
 import { defineComponent } from 'vue';
 import Button from 'primevue/button';
+import Rating from 'primevue/rating';
 
 export default defineComponent({
     components: {
-        Button
+        Button,
+        Rating
     },
     props: {
         meal: Object,

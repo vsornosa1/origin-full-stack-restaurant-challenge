@@ -26,7 +26,6 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-//import MealCard from '@/components/common/MealCard.vue';
 import DataView from 'primevue/dataview';
 import DataViewLayoutOptions from 'primevue/dataviewlayoutoptions';
 import MealList from '@/components/common/MealList.vue';
