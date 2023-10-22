@@ -6,10 +6,12 @@ export const useCartStore = defineStore("cart", {
     }),
     getters: {
         cartTotal() {
-            return this.cart.reduce(
+            const total = this.cart.reduce(
               (totalBill, item) => totalBill + item.price * item.quantity,
               0
             );
+            const truncated = Math.floor(total * 100) / 100; 
+            return truncated.toFixed(2); // Truncated to 2decimal places.
         },
         cartQuantity() {
             return this.cart.reduce(
