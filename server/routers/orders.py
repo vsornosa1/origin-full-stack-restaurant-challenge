@@ -12,8 +12,8 @@ router = APIRouter()
 
 
 @router.get("", response_model=List[Order])
-async def search_orders(db_session: Session = Depends(get_db)):
-    return get_orders(db_session)
+async def search_orders(current_user: md.User = Depends(get_current_user), db_session: Session = Depends(get_db)):
+    return get_orders(db_session, current_user.id)
 
 
 @router.post("", response_model=Order)

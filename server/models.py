@@ -51,6 +51,7 @@ class Order(Base):
     __finish_time = Column(DateTime(timezone=True), default=random_delay, nullable=False)
     user_id = Column(Integer, ForeignKey('users.id'))
 
+    owner = relationship("User", back_populates="orders")
     plates = relationship("PlateOrder", back_populates="order")
 
 
@@ -60,3 +61,5 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String, unique=True, index=True)
     hashed_password = Column(String)
+
+    orders = relationship("Order", back_populates="owner")

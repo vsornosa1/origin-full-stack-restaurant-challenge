@@ -5,8 +5,8 @@ from server.schemas import OrderBase
 import server.models as md
 
 
-def get_orders(db_session: Session):
-    return db_session.query(md.Order).all()
+def get_orders(db_session: Session, user_id: int):
+    return db_session.query(md.Order).filter(md.Order.user_id == user_id).all()
 
 
 def add_order(db_session: Session, item: OrderBase, user_id: int):

@@ -1,13 +1,13 @@
 
 <template>
-    <div v-for="(order, i) in orders">
+    <div v-if="orders && orders.length" v-for="order in orders">
         <div class="card xl:flex xl:justify-content-center">
-            <OrderList v-model="orders[i].plates" listStyle="height:auto" dataKey="i">
+            <OrderList v-model="order.plates" listStyle="height:auto" dataKey="i">
                 <template #header>
                     <div class="flex gap-5">
-                        <span># {{ orders[i].order_id }}</span>
-                        <span>{{ parseTimeToString(orders[i].order_time) }}</span>
-                        <span>Total: {{ getOrderTotal(orders[i].order_id) }} €</span>
+                        <span># {{ order.order_id }}</span>
+                        <span>{{ parseTimeToString(order.order_time) }}</span>
+                        <span>Total: {{ getOrderTotal(order.order_id) }} €</span>
                     </div>
                     
                 </template>
@@ -23,14 +23,27 @@
             </OrderList>
         </div>
     </div>
+    <div v-else>
+        <p class="text-gray-700"> No orders so far! </p>
+        <p class="text-gray-700"> Maybe you could <router-link to="/menu" class="cursor-pointer"> order something... </router-link></p>
+    </div>
 </template>
 
 <script setup>
 import OrderList from 'primevue/orderlist';
 import { ref, onMounted, computed } from 'vue';
+import { useRouter } from 'vue-router';
+import { makeApiCallWithToken } from '@/services/apiService';
+
 
 const orders = ref(null);
 const plates = ref();
+const router = useRouter();
+
+const reversedListOfOrders = computed(() => {
+    return [...orders.value].reverse(); // copyOf
+});
+
 
 onMounted(async () => {
     // fetch plates from server
@@ -39,11 +52,22 @@ onMounted(async () => {
     const data = await response.json();
     plates.value = data;
 
-    // fetch orders from server
-    const URL_ORDERS = "https://localhost:8443/api/orders"
-    const response_orders = await fetch(URL_ORDERS);
-    const data_orders = await response_orders.json();
-    orders.value = data_orders;
+    try {
+        const response_orders = await makeApiCallWithToken('/api/orders', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log("🌟🌟Orders:", response_orders);
+        if (response_orders) {
+            orders.value = response_orders;
+        } else {
+            alert('Failed to submit the order. Please try again.');
+        }
+    } catch (error) {
+        console.error('There was an error submitting the order:', error);
+    }
 });
 
 
@@ -56,6 +80,7 @@ function plateImage(itemId) {
 }
 
 function parseTimeToString(timestamp) {
+    if (!timestamp) return "";
     const regex = /(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/;
     let matches = timestamp.match(regex);
     if (matches) {
