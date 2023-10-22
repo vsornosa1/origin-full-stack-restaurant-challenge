@@ -1,7 +1,6 @@
 <template>
     <div v-if="cart.length" class="cart-dropdown" v-on:click="isOpen = !isOpen">
         <span> 🛒 Cart has <span class="font-semibold">{{ quantity }}</span> items </span>
-        <div> {{ JSON.stringify(cartStore.cart, null, 4) }} </div>
         <div v-if="isOpen" class="cart-content">
             <ul>
                 <li v-for="item in cart" :key="item.id" class="flex justify-content-between flex-wrap">

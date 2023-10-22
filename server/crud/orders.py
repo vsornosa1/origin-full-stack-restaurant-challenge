@@ -11,7 +11,6 @@ def get_orders(db_session: Session):
 
 def add_order(db_session: Session, item: OrderBase, user_id: int):
     # Check if all plates exist.
-    print("Check")
     plate_ids = [plate.plate_id for plate in item.plates]
     plate_ids_result = db_session.query(md.Plate.plate_id).filter(
         md.Plate.plate_id.in_(plate_ids)
@@ -31,7 +30,7 @@ def add_order(db_session: Session, item: OrderBase, user_id: int):
             )
 
     order = md.Order(user_id=user_id) # Associated order x user
-    print(f"ORDERRRRRRRRRR: {order}")
+
     # Add PlateOrder objects.
     for plate in item.plates:
         plate_order = md.PlateOrder(

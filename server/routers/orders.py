@@ -23,7 +23,6 @@ async def add_new_order(
     db_session: Session = Depends(get_db)
 ):
     try:
-        print("ORDER")
         return add_order(db_session, item, current_user.id)
     except Exception as e:
         print(f"🔥 Error: {e}")

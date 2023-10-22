@@ -34,17 +34,12 @@ def get_current_user(request: Request, db: Session = Depends(get_db)):
         if token.startswith("Bearer "):
             token = token[7:]
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        print(f"🐛PAYLOAD: {payload}")
         username = payload.get("sub")
-        print(f"🚗EXTRACTED USER_ID: {username}")
         user = crud.get_user_by_username(db, username)
-        print(f"🌟🌟user fetched: {user}")
         if not user:
-            print("🛠️")
             raise HTTPException(status_code=401, detail="User not found")
         return user
     except jwt.ExpiredSignatureError:
-        print("🛠️🛠️🛠️")
         raise HTTPException(status_code=401, detail="Token has expired")
     
 
@@ -55,7 +50,6 @@ def login_for_access_token(form_data: TokenData, db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(status_code=400, detail="Invalid credentials")
     if not bcrypt.checkpw(form_data.password.encode('utf-8'), user.hashed_password.encode('utf-8')):
-        print('🚗🚗ERROR2')
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
