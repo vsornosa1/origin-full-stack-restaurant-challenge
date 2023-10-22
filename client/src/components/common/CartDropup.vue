@@ -15,7 +15,7 @@
 
             <Button label="Submit Order" @click="showConfirm" />
             <Dialog v-model:visible="displayConfirm" :modal="true" :closable="false">
-                <template #header> Confirm Order </template>
+                <template #header> <h3> 💳 Confirm Order? </h3> </template>
                 <p> Are you sure you want to submit your order? </p>
                 <template #footer>
                     <Button label="No" @click="hideConfirm" />

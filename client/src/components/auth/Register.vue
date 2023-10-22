@@ -68,6 +68,7 @@ export default {
       try {
         await registerUser(state.register);
         authStore.setAuthenticated(true);
+        alert('Successfully created a new account! Now, log in to continue.')
         navigateToMenuIfAuthenticated();
       } catch (error) {
         console.error("Error registering:", error.message);

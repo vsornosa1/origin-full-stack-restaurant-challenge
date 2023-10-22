@@ -11,7 +11,7 @@
                     <Rating v-model="mealRatings" readonly :cancel="false" />
                 </div>
                 <div v-else>
-                    <i class="text-sm"> Buy to be the first to review! </i>
+                    <i class="text-sm"> Buy it to be the first to review! </i>
                 </div>
             </div>
             <div class="flex gap-1">

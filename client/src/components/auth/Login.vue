@@ -68,6 +68,7 @@ export default {
       try {
         const data = await getToken(state.login);
         localStorage.setItem('token', data.access_token);
+        alert('Logged in correctly!')
         authStore.setAuthenticated(true);
         navigateToMenuIfAuthenticated();
       } catch (error) {

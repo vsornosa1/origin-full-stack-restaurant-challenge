@@ -51,13 +51,13 @@
 
 
 <script setup>
-import Button from 'primevue/button';
-import Rating from 'primevue/rating';
-import OrderList from 'primevue/orderlist';
-import Dialog from 'primevue/dialog';
-import Textarea from 'primevue/textarea';
 import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
+import Button from 'primevue/button';
+import Rating from 'primevue/rating';
+import Dialog from 'primevue/dialog';
+import Textarea from 'primevue/textarea';
+import OrderList from 'primevue/orderlist';
 import { makeApiCallWithToken } from '@/services/apiService';
 import { truncateMealName, parseTimeToString } from '../services/stringManipulationService';
 
@@ -146,7 +146,7 @@ const submitReview = async () => {
             alert('Review submitted successfully!');
             showReviewModal.value = false;
         } else {
-            alert('Failed to submit the review. Please try again.');
+            alert('Review already done for this meal!');
         }
     } catch (error) {
         console.error('There was an error submitting the review:', error);
