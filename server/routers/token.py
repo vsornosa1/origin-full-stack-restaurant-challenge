@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from sqlalchemy.orm import Session
 import jwt
 import bcrypt
@@ -24,6 +24,29 @@ def create_access_token(data: dict, expires_delta: timedelta = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
+
+def get_current_user(request: Request, db: Session = Depends(get_db)):
+    token = request.headers.get("Authorization")
+    if not token:
+        raise HTTPException(status_code=401, detail="Token is missing")
+
+    try:
+        if token.startswith("Bearer "):
+            token = token[7:]
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        print(f"🐛PAYLOAD: {payload}")
+        username = payload.get("sub")
+        print(f"🚗EXTRACTED USER_ID: {username}")
+        user = crud.get_user_by_username(db, username)
+        print(f"🌟🌟user fetched: {user}")
+        if not user:
+            print("🛠️")
+            raise HTTPException(status_code=401, detail="User not found")
+        return user
+    except jwt.ExpiredSignatureError:
+        print("🛠️🛠️🛠️")
+        raise HTTPException(status_code=401, detail="Token has expired")
+    
 
 @router.post("")
 def login_for_access_token(form_data: TokenData, db: Session = Depends(get_db)):

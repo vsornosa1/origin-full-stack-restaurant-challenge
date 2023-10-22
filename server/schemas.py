@@ -50,6 +50,8 @@ class PlateOrder(PlateOrderBase):
 class OrderBase(BaseModel):
     plates: List[PlateOrderBase]
     
+class OrderCreate(OrderBase):
+    pass
 
 class Order(OrderBase):   
     order_id: int

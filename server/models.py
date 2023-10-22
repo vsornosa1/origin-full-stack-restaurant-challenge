@@ -48,8 +48,8 @@ class Order(Base):
 
     order_id = Column(Integer, primary_key=True)
     order_time = Column(DateTime(timezone=True), default=datetime.now, nullable=False)
-
     __finish_time = Column(DateTime(timezone=True), default=random_delay, nullable=False)
+    user_id = Column(Integer, ForeignKey('users.id'))
 
     plates = relationship("PlateOrder", back_populates="order")
 

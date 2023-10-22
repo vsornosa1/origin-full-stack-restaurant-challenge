@@ -4,7 +4,7 @@ import { ref } from 'vue';
 
 const items = ref([
   {label: 'Menu', to: '/menu'},
-  {label: 'Orders', to: '/orders'},
+  {label: 'My Orders', to: '/orders'},
 ]);
 
 </script>

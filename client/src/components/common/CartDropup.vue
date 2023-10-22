@@ -1,6 +1,7 @@
 <template>
     <div v-if="cart.length" class="cart-dropdown" v-on:click="isOpen = !isOpen">
         <span> 🛒 Cart has <span class="font-semibold">{{ quantity }}</span> items </span>
+        <div> {{ JSON.stringify(cartStore.cart, null, 4) }} </div>
         <div v-if="isOpen" class="cart-content">
             <ul>
                 <li v-for="item in cart" :key="item.id" class="flex justify-content-between flex-wrap">
@@ -31,12 +32,14 @@ import { ref, computed } from 'vue';
 import { useCartStore } from '@/stores/cartStore';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
+import { makeApiCallWithToken } from '@/services/apiService';
+
 
 let isOpen = ref(false);
 let displayConfirm = ref(false);
 
 const cartStore = useCartStore();
-const cart = ref(cartStore.cart);
+const cart = computed(() => cartStore.cart);
 const total = computed(() => cartStore.cartTotal);
 const quantity = computed(() => cartStore.cartQuantity);
 
@@ -44,7 +47,6 @@ const quantity = computed(() => cartStore.cartQuantity);
 const truncateMealName = (name) => {
     return name.split(' ').slice(0, 3).join(' ');
 }
-
 const showConfirm = () => {
     displayConfirm.value = true;
 };
@@ -52,19 +54,24 @@ const hideConfirm = () => {
     displayConfirm.value = false;
 };
 
+
 const submitOrder = async () => {
     console.log('🌟', cartStore.cart)
     try {
-        const response = await fetch('/api/orders', {
+        console.log(cartStore.cart)
+        const response = await makeApiCallWithToken('/api/orders', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(cartStore.cart)
+            body: JSON.stringify({ plates: cartStore.cart})
         });
 
-        if (response.ok) {
+        console.log(response)
+
+        if (response) {
             alert('Order submitted successfully!');
+            hideConfirm();
             cartStore.clearCart();
         } else {
             alert('Failed to submit the order. Please try again.');
@@ -72,7 +79,6 @@ const submitOrder = async () => {
     } catch (error) {
         console.error('There was an error submitting the order:', error);
     }
-    hideConfirm();
 };
 
 
