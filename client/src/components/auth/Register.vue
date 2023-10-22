@@ -36,6 +36,9 @@ export default {
     Button,
     InputText
   },
+  props: {
+    display: Boolean
+  },
   setup(_, context) {
     const router = useRouter();
     const authStore = useAuthStore();
@@ -45,8 +48,11 @@ export default {
         username: '',
         password: ''
       },
-      isButtonDisabled: computed(() => !state.register.username.trim() || !state.register.password.trim())
-    });
+   });
+
+   const isButtonDisabled = computed(() =>
+      !state.login.username.trim() || !state.login.password.trim()
+    );
 
     function closeModal() {
       context.emit('update:display', false);
