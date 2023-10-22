@@ -54,17 +54,17 @@ export default {
       !state.login.username.trim() || !state.login.password.trim()
     );
 
-    function closeModal() {
+    const closeModal = () => {
       context.emit('update:display', false);
     }
 
-    function navigateToMenuIfAuthenticated() {
+    const navigateToMenuIfAuthenticated = () => {
       if (authStore.isAuthenticated) {
         router.push('/menu');
       }
     }
 
-    async function attemptLogin() {
+    const attemptLogin = async () => {
       try {
         const data = await getToken(state.login);
         localStorage.setItem('token', data.access_token);

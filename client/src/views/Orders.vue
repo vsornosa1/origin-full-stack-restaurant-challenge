@@ -90,7 +90,7 @@ const cancelReview = () => {
 
 }
 
-async function submitReview() {
+const submitReview = async () => {
     const reviewData = {
         plate_id: currentPlateId.value,
         rating: currentRating.value,
@@ -116,14 +116,15 @@ async function submitReview() {
     }
 }
 
-
-onMounted(async () => {
-    // fetch plates from server
+const fetchPlates = async () => {
     const URL = "https://localhost:8443/api/plates"
     const response = await fetch(URL);
     const data = await response.json();
     plates.value = data;
+} 
 
+
+const fetchUserOrders = async () => {
     try {
         const response_orders = await makeApiCallWithToken('/api/orders', {
             method: 'GET',
@@ -140,18 +141,24 @@ onMounted(async () => {
     } catch (error) {
         console.error('There was an error submitting the order:', error);
     }
+}
+
+onMounted(async () => {
+    fetchPlates();
+    fetchUserOrders();
+   
 });
 
 
-function platePrice(itemId) {
+const platePrice = (itemId) => {
     return plates.value.find(plate => plate.plate_id === itemId).price
 }
 
-function plateInfo(itemId) {
+const plateInfo = (itemId) => {
     return plates.value.find(plate => plate.plate_id === itemId)
 }
 
-function parseTimeToString(timestamp) {
+const parseTimeToString = (timestamp) => {
     if (!timestamp) return "";
     const regex = /(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/;
     let matches = timestamp.match(regex);
@@ -160,7 +167,7 @@ function parseTimeToString(timestamp) {
     }
 }
 
-function getOrderTotal(orderId) {
+const getOrderTotal = (orderId) => {
     let total = 0;
     orders.value.find(order => order.order_id === orderId).plates.forEach(plate => {
         total += platePrice(plate.plate_id) * plate.quantity;

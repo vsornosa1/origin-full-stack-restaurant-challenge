@@ -54,17 +54,17 @@ export default {
       !state.login.username.trim() || !state.login.password.trim()
     );
 
-    function closeModal() {
+    const closeModal = () => {
       context.emit('update:display', false);
     }
 
-    function navigateToMenuIfAuthenticated() {
+    const navigateToMenuIfAuthenticated = () => {
       if (authStore.isAuthenticated) {
         router.push('/menu');
       }
     }
 
-    async function attemptRegister() {
+    const attemptRegister = async () => {
       try {
         await registerUser(state.register);
         authStore.setAuthenticated(true);
