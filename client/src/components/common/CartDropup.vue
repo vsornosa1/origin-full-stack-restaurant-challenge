@@ -32,7 +32,7 @@ import { useCartStore } from '@/stores/cartStore';
 import Button from 'primevue/button';
 import Dialog from 'primevue/dialog';
 import { makeApiCallWithToken } from '@/services/apiService';
-import { truncateMealName } from '@/services/truncate';
+import { truncateMealName } from '@/services/stringManipulationService';
 
 
 let isOpen = ref(false);

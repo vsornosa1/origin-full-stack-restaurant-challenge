@@ -3,6 +3,7 @@ from .. import models, schemas
 
 
 def get_reviews_by_plate_id(db: Session, plate_id: int):
+    print(plate_id)
     return db.query(models.Review).filter(models.Review.plate_id == plate_id).all()
 
 def get_review_by_user_and_plate(db: Session, user_id: int, plate_id: int):

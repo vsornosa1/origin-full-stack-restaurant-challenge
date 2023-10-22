@@ -17,7 +17,7 @@
                         <div class="flex-1 flex flex-column gap-2">
                             <span class="font-bold w-10rem">{{ slotProps.item.quantity }} x {{ slotProps.item.plate_name }}</span>
                         </div>
-                        <span class="font-bold text-900">{{ platePrice(slotProps.item.plate_id) * slotProps.item.quantity }} CHF</span>
+                        <span class="font-bold text-900">{{ plateInfo(slotProps.item.plate_id).price * slotProps.item.quantity }} CHF</span>
                         <Button @click="openReviewModal(slotProps.item.plate_id)" label="Review" />
                     </div>
                 </template>
@@ -56,10 +56,10 @@ import Rating from 'primevue/rating';
 import OrderList from 'primevue/orderlist';
 import Dialog from 'primevue/dialog';
 import Textarea from 'primevue/textarea';
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
 import { makeApiCallWithToken } from '@/services/apiService';
-import { truncateMealName } from '../services/truncate';
+import { truncateMealName, parseTimeToString } from '../services/stringManipulationService';
 
 
 const orders = ref(null);
@@ -72,11 +72,7 @@ const currentPlateInfo = ref('');
 const currentRating = ref(null);
 const currentComment = ref('');
 
-/* const reversedListOfOrders = computed(() => {
-    return [...orders.value].reverse(); // copyOf
-}); */
-
-
+ // REVIEWS
 const openReviewModal = (plateId) => {
     showReviewModal.value = true;
     currentPlateId.value = plateId;
@@ -88,6 +84,48 @@ const cancelReview = () => {
     currentRating.value = null;
     currentComment.value = '';
 
+}
+
+
+ // PRICING + PLATES
+const plateInfo = (itemId) => {
+    return plates.value.find(plate => plate.plate_id === itemId)
+}
+
+const getOrderTotal = (orderId) => {
+    let total = 0;
+    orders.value.find(order => order.order_id === orderId).plates.forEach(plate => {
+        total += plateInfo(plate.plate_id).price * plate.quantity;
+    });
+    return total.toFixed(2);
+}
+
+
+ // API interaction functions
+const fetchPlates = async () => {
+    const URL = "https://localhost:8443/api/plates"
+    const response = await fetch(URL);
+    const data = await response.json();
+    plates.value = data;
+}
+
+const fetchUserOrders = async () => {
+    try {
+        const response_orders = await makeApiCallWithToken('/api/orders', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log("🌟🌟Orders:", response_orders);
+        if (response_orders) {
+            orders.value = response_orders;
+        } else {
+            alert('Failed to submit the order. Please try again.');
+        }
+    } catch (error) {
+        console.error('There was an error submitting the order:', error);
+    }
 }
 
 const submitReview = async () => {
@@ -116,63 +154,10 @@ const submitReview = async () => {
     }
 }
 
-const fetchPlates = async () => {
-    const URL = "https://localhost:8443/api/plates"
-    const response = await fetch(URL);
-    const data = await response.json();
-    plates.value = data;
-} 
-
-
-const fetchUserOrders = async () => {
-    try {
-        const response_orders = await makeApiCallWithToken('/api/orders', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-        console.log("🌟🌟Orders:", response_orders);
-        if (response_orders) {
-            orders.value = response_orders;
-        } else {
-            alert('Failed to submit the order. Please try again.');
-        }
-    } catch (error) {
-        console.error('There was an error submitting the order:', error);
-    }
-}
 
 onMounted(async () => {
     fetchPlates();
     fetchUserOrders();
-   
 });
-
-
-const platePrice = (itemId) => {
-    return plates.value.find(plate => plate.plate_id === itemId).price
-}
-
-const plateInfo = (itemId) => {
-    return plates.value.find(plate => plate.plate_id === itemId)
-}
-
-const parseTimeToString = (timestamp) => {
-    if (!timestamp) return "";
-    const regex = /(\d{4}-\d{2}-\d{2})T(\d{2}:\d{2})/;
-    let matches = timestamp.match(regex);
-    if (matches) {
-        return matches[1] + " " + matches[2];
-    }
-}
-
-const getOrderTotal = (orderId) => {
-    let total = 0;
-    orders.value.find(order => order.order_id === orderId).plates.forEach(plate => {
-        total += platePrice(plate.plate_id) * plate.quantity;
-    });
-    return total.toFixed(2);
-}
 
 </script>
