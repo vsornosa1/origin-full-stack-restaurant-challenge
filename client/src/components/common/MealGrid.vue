@@ -10,49 +10,35 @@
                 <Rating v-model="value" :cancel="false" />
             </div>
             <div class="flex gap-1">
-                <Button icon="pi pi-info-circle" @click="openReviewsDialog(meal)" rounded />
+                <Button icon="pi pi-info-circle" @click="openReviewsDialog" rounded />
                 <Button icon="pi pi-shopping-cart" @click="addToCart(meal)" rounded />
             </div>
         </div>
     </div>
-    <Dialog :visible="showModal" :modal="true" :closable="false" class="w-24rem">
-        <template #header>
-            <div class="flex flex-column align-items-center">
-                <h3> ⭐ Reviews for {{ truncateMealName(meal.plate_name, 2) }} ⭐</h3>
-                <img class="w-9 shadow-2 border-round" :src="meal.picture" :alt="meal.plate_name" />
-            </div>
-        </template>
-
-        <div v-for="review in reviews" :key="review.user_id" class="flex justify-content-between">
-            <p><strong>{{ review.user_id }}</strong>: {{ review.comment }}</p>
-            <Rating v-model="review.rating" readonly :cancel="false" />
-        </div>
-      </Dialog>
+    <ReviewDialog :meal="meal" :reviews="reviews" :showModal="showModal" />
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, defineProps } from 'vue';
 import Button from 'primevue/button';
 import Rating from 'primevue/rating';
-import Dialog from 'primevue/dialog';
+import ReviewDialog from './ReviewDialog.vue';
 import { makeApiCallWithToken } from '@/services/apiService';
-import { truncateMealName } from '@/services/stringManipulationService';
 
-
-const reviews = ref(null);
 const showModal = ref(false);
+const reviews = ref(null);
 
 const { meal, addToCart } = defineProps({
     meal: Object,
     addToCart: Function
 });
 
-const openReviewsDialog = async (meal) => {
-    await fetchPlateReviews(meal.plate_id);
+const openReviewsDialog = async () => {
+    showModal.value = true;
+    fetchPlateReviews();
 }
 
 const fetchPlateReviews = async () => {
-    console.log(meal)
     try {
         const response_reviews = await makeApiCallWithToken(`/api/reviews/plates/${meal.plate_id}`, {
             method: 'GET',
@@ -60,12 +46,9 @@ const fetchPlateReviews = async () => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log("🌟🌟Reviews:", response_reviews);
+        console.log(response_reviews)
         if (response_reviews.length > 0) {
             reviews.value = response_reviews;
-            showModal.value = true;
-        } else {
-            alert('Failed to fetch reviews.');
         }
     } catch (error) {
         console.error('There was an error fetching the reviews:', error);
