@@ -1,5 +1,9 @@
 <template>
-    <Dialog :visible="showModal" :modal="true" :closable="false" class="w-26rem">
+    <Dialog 
+        :visible="showModal" 
+        :modal="true" 
+        :closable="false" 
+        class="w-26rem">
         <template #header>
             <div class="flex flex-column align-items-center">
                 <h3> ⭐ Reviews for {{ truncateMealName(meal.plate_name, 2) }} ⭐ </h3>
@@ -11,14 +15,16 @@
             <p><strong> {{ review.user_id }} </strong>: {{ review.comment }} </p>
             <Rating v-model="review.rating" readonly :cancel="false" />
         </div>
+        <Button @click="cancelReviewDialog" class="text-sm negative-state" > Close </Button>
     </Dialog>
 </template>
 
 <script setup>
-import {defineProps } from 'vue';
+import { defineProps, defineEmits } from 'vue';
 import Rating from 'primevue/rating';
 import Dialog from 'primevue/dialog';
 import { truncateMealName } from '@/services/stringManipulationService';
+
 
 const { meal, showModal, reviews } = defineProps({
     meal: Object,
@@ -26,7 +32,9 @@ const { meal, showModal, reviews } = defineProps({
     showModal: Boolean
 });
 
-
-
+const emit = defineEmits();
+const cancelReviewDialog = () => {
+    emit('update:showModal', false);
+};
 
 </script>

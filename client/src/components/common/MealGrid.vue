@@ -7,7 +7,12 @@
         <div class="flex align-items-center justify-content-between">
             <div class="flex flex-column align-items-start">
                 <span class="text-xl font-semibold"> {{ meal.price }} CHF </span>
-                <Rating v-model="value" :cancel="false" />
+                <div v-if="mealRatings > 0">
+                    <Rating v-model="mealRatings" readonly :cancel="false" />
+                </div>
+                <div v-else>
+                    <i class="text-sm"> Buy to be the first to review! </i>
+                </div>
             </div>
             <div class="flex gap-1">
                 <Button icon="pi pi-info-circle" @click="openReviewsDialog" rounded />
@@ -15,18 +20,21 @@
             </div>
         </div>
     </div>
-    <ReviewDialog :meal="meal" :reviews="reviews" :showModal="showModal" />
+    <ReviewDialog :meal="meal" :reviews="reviews" :showModal="showModal" @update:showModal="val => showModal = val" />
 </template>
 
 <script setup>
-import { ref, defineProps } from 'vue';
+import { ref, defineProps, onMounted } from 'vue';
 import Button from 'primevue/button';
 import Rating from 'primevue/rating';
 import ReviewDialog from './ReviewDialog.vue';
 import { makeApiCallWithToken } from '@/services/apiService';
 
 const showModal = ref(false);
+
 const reviews = ref(null);
+const mealRatings = ref({});
+
 
 const { meal, addToCart } = defineProps({
     meal: Object,
@@ -46,7 +54,6 @@ const fetchPlateReviews = async () => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log(response_reviews)
         if (response_reviews.length > 0) {
             reviews.value = response_reviews;
         }
@@ -54,5 +61,20 @@ const fetchPlateReviews = async () => {
         console.error('There was an error fetching the reviews:', error);
     }
 }
+
+const fetchAverageRatings = async () => {
+    const response_rating = await makeApiCallWithToken(`/api/plates/average/${meal.plate_id}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    });
+    mealRatings.value = response_rating;
+}
+
+
+onMounted(async () => {
+    fetchAverageRatings();
+});
 
 </script>

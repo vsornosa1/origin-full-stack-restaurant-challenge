@@ -83,7 +83,6 @@ const cancelReview = () => {
     showReviewModal.value = false;
     currentRating.value = null;
     currentComment.value = '';
-
 }
 
 

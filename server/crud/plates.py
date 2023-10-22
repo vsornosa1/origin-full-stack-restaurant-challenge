@@ -9,6 +9,11 @@ def get_plates(db_session: Session):
     return db_session.query(md.Plate).all()
 
 
+def get_avg_rating_by_plate_id(db: Session, plate_id: int):
+    result = db.query(md.Review).filter(md.Review.plate_id == plate_id).with_entities(func.avg(md.Review.rating).label('average')).first()
+    return result.average if result else None
+
+
 def get_plates_count(db_session: Session):
     result = db_session.query(
         md.Plate,
